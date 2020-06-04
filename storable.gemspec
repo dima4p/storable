@@ -1,12 +1,11 @@
 @spec = Gem::Specification.new do |s|
   s.name = "storable"
-  s.rubyforge_project = "storable"
-  s.version = "0.8.9"
+  s.version = "0.9.0"
   s.summary = "Storable: Marshal Ruby classes into and out of multiple formats (yaml, json, csv, tsv)"
   s.description = s.summary
   s.author = "Delano Mandelbaum"
   s.email = "delano@solutious.com"
-  s.homepage = "http://github.com/delano/storable/"
+  s.homepage = "http://github.com/dima4p/storable/"
   
   
   # = EXECUTABLES =
@@ -35,7 +34,6 @@
   )
   
   s.extra_rdoc_files = %w[README.rdoc LICENSE.txt]
-  s.has_rdoc = true
   s.rdoc_options = ["--line-numbers", "--title", s.summary, "--main", "README.rdoc"]
   s.require_paths = %w[lib]
   s.rubygems_version = '1.3.0'

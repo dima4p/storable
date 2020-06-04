@@ -7,6 +7,8 @@
 
 require 'stringio'
 require 'irb/ruby-lex'
+require 'yard'
+
 #SCRIPT_LINES__ = {} unless defined? SCRIPT_LINES__
 
 class ProcString < String
@@ -38,10 +40,10 @@ class ProcString < String
   end
 end
 
-class RubyToken::Token
+class YARD::Parser::Ruby::Legacy::RubyToken::Token
   
     # These EXPR_BEG tokens don't have associated end tags
-  FAKIES = [RubyToken::TkWHEN, RubyToken::TkELSIF, RubyToken::TkELSE, RubyToken::TkTHEN]
+  FAKIES = [YARD::Parser::Ruby::Legacy::RubyToken::TkWHEN, YARD::Parser::Ruby::Legacy::RubyToken::TkELSIF, YARD::Parser::Ruby::Legacy::RubyToken::TkELSE, YARD::Parser::Ruby::Legacy::RubyToken::TkTHEN]
   
   def name
     @name ||= nil
@@ -49,14 +51,14 @@ class RubyToken::Token
   
   def open_tag?
     return false if name.nil? || get_props.nil?
-    a = (get_props[1] == RubyToken::EXPR_BEG) &&
+    a = (get_props[1] == YARD::Parser::Ruby::Legacy::RubyToken::EXPR_BEG) &&
           self.class.to_s !~ /_MOD/  && # ignore onliner if, unless, etc...
           !FAKIES.member?(self.class)  
     a 
   end
   
   def get_props
-    RubyToken::TkReading2Token[name]
+    YARD::Parser::Ruby::Legacy::RubyToken::TkReading2Token[name]
   end
   
 end
@@ -84,22 +86,22 @@ module ProcSource
     while token = lexer.token
       n = token.name
       
-      if RubyToken::TkIDENTIFIER === token
+      if YARD::Parser::Ruby::Legacy::RubyToken::TkIDENTIFIER === token
         #nothing
-      elsif token.open_tag? || RubyToken::TkfLBRACE === token
+      elsif token.open_tag? || YARD::Parser::Ruby::Legacy::RubyToken::TkfLBRACE === token
         nesting += 1
         stoken = token if nesting == 1
-      elsif RubyToken::TkEND === token || RubyToken::TkRBRACE === token
+      elsif YARD::Parser::Ruby::Legacy::RubyToken::TkEND === token || YARD::Parser::Ruby::Legacy::RubyToken::TkRBRACE === token
         if nesting == 1
           etoken = token 
           break
         end
         nesting -= 1
-      elsif RubyToken::TkLBRACE === token
+      elsif YARD::Parser::Ruby::Legacy::RubyToken::TkLBRACE === token
         nesting += 1
-      elsif RubyToken::TkBITOR === token && stoken
+      elsif YARD::Parser::Ruby::Legacy::RubyToken::TkBITOR === token && stoken
         #nothing
-      elsif RubyToken::TkNL === token && stoken && etoken
+      elsif YARD::Parser::Ruby::Legacy::RubyToken::TkNL === token && stoken && etoken
         break if nesting <= 0
       else
         #p token
@@ -138,17 +140,17 @@ module ProcSource
     success = false
     while token = lexer.token
       case token
-      when RubyToken::TkNL
+      when YARD::Parser::Ruby::Legacy::RubyToken::TkNL
         break
-      when RubyToken::TkDO
+      when YARD::Parser::Ruby::Legacy::RubyToken::TkDO
         success = true
-      when RubyToken::TkfLBRACE
+      when YARD::Parser::Ruby::Legacy::RubyToken::TkfLBRACE
         success = true
-      when RubyToken::TkCONSTANT
+      when YARD::Parser::Ruby::Legacy::RubyToken::TkCONSTANT
         if token.name == "Proc" &&
-           lexer.token.is_a?(RubyToken::TkDOT)
+           lexer.token.is_a?(YARD::Parser::Ruby::Legacy::RubyToken::TkDOT)
           method = lexer.token
-          if method.is_a?(RubyToken::TkIDENTIFIER) &&
+          if method.is_a?(YARD::Parser::Ruby::Legacy::RubyToken::TkIDENTIFIER) &&
              method.name == "new"
             success = true
           end
